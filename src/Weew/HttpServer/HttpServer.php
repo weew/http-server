@@ -2,43 +2,54 @@
 
 namespace Weew\HttpServer;
 
+use Exception;
+use Weew\Timer\ITimer;
+use Weew\Timer\Timer;
+
 class HttpServer implements IHttpServer {
     /**
      * @var int
      */
-    private $pid;
+    protected $pid;
 
     /**
      * @var string
      */
-    private $host;
+    protected $host;
 
     /**
      * @var int
      */
-    private $port;
+    protected $port;
 
     /**
      * @var string
      */
-    private $root;
+    protected $root;
+
+    /**
+     * @var float
+     */
+    protected $waitForServer;
 
     /**
      * @var bool
      */
-    private $enableOutput;
+    protected $enableOutput;
 
     /**
      * @param $host
      * @param $port
      * @param $root
+     * @param float $waitForServer
      * @param bool $enableOutput
      */
-    public function __construct($host, $port, $root, $enableOutput = false) {
+    public function __construct($host, $port, $root, $waitForServer = 5.0, $enableOutput = false) {
         $this->host = $host;
         $this->port = $port;
         $this->root = $root;
         $this->enableOutput = $enableOutput;
+        $this->waitForServer = $waitForServer;
     }
 
     /**
@@ -59,30 +70,11 @@ class HttpServer implements IHttpServer {
      * Start server.
      */
     public function start() {
-        if ($this->isRunning()) {
-            $this->pid = $this->getPid();
-
-            $this->echoMessage(
-                $this->getServerIsAlreadyRunningMessage(
-                    $this->host, $this->port, $this->pid
-                )
-            );
-
-            return;
+        if ( ! $this->checkIfServerIsRunning()) {
+            $this->startServer();
+            $this->registerShutdownHandler();
+            $this->waitForServerToStart();
         }
-
-        $command = $this->getStartCommand($this->host, $this->port, $this->root);
-        exec($command, $output);
-
-        $this->pid = $this->getPid();
-
-        $this->echoMessage($this->getStartMessage(
-            date('r'), $this->host, $this->port, $this->pid
-        ));
-
-        register_shutdown_function(function () {
-            $this->stop();
-        });
     }
 
     /**
@@ -147,7 +139,7 @@ class HttpServer implements IHttpServer {
      */
     public function getStartMessage($date, $host, $port, $pid) {
         return s(
-            '%s - Web server started on %s:%d with PID %d',
+            '%s - HTTP server started on %s:%d with PID %d',
             $date, $host, $port, $pid
         );
     }
@@ -160,19 +152,23 @@ class HttpServer implements IHttpServer {
      */
     public function getStopMessage($date, $pid) {
         return s(
-            '%s - Killing process with ID %d', $date, $pid
+            '%s - Killing process with PID %d', $date, $pid
         );
     }
 
     /**
+     * @param $date
      * @param $host
      * @param $port
      * @param $pid
      *
      * @return string
      */
-    public function getServerIsAlreadyRunningMessage($host, $port, $pid) {
-        return s('Server is already running at %s:%d with PID %d', $host, $port, $pid);
+    public function getServerIsAlreadyRunningMessage($date, $host, $port, $pid) {
+        return s(
+            '%s - Server is already running at %s:%d with PID %d',
+            $date, $host, $port, $pid
+        );
     }
 
     /**
@@ -208,5 +204,76 @@ class HttpServer implements IHttpServer {
      */
     public function getPidCommand($host, $port) {
         return s('ps | grep -v grep | grep "%s:%d"', $host, $port);
+    }
+
+    /**
+     * Check if server is running and print a debug message.
+     *
+     * @return bool
+     */
+    protected function checkIfServerIsRunning() {
+        if ($this->isRunning()) {
+            $this->pid = $this->getPid();
+
+            $this->echoMessage(
+                $this->getServerIsAlreadyRunningMessage(
+                    date('r'), $this->host, $this->port, $this->pid
+                )
+            );
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Start server.
+     */
+    protected function startServer() {
+        $command = $this->getStartCommand($this->host, $this->port, $this->root);
+        exec($command, $output);
+
+        $this->pid = $this->getPid();
+
+        $this->echoMessage($this->getStartMessage(
+            date('r'), $this->host, $this->port, $this->pid
+        ));
+    }
+
+    /**
+     * Fail-safe server shutdown.
+     */
+    protected function registerShutdownHandler() {
+        register_shutdown_function(function () {
+            $this->stop();
+        });
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function waitForServerToStart() {
+        if ($this->waitForServer > 0) {
+            $timer = $this->createTimer();
+            $timer->start();
+
+            while ( ! $this->isRunning()) {
+                if ($timer->getDuration() < $this->waitForServer) {
+                    usleep(100000); // 0.1 second
+                } else {
+                    throw new Exception(
+                        s('Could not start server after %d seconds.', $this->waitForServer)
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * @return ITimer
+     */
+    protected function createTimer() {
+        return new Timer();
     }
 }
