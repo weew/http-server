@@ -6,7 +6,7 @@ class HttpServer implements IHttpServer {
     /**
      * @var bool
      */
-    private static $enableOutput = false;
+    private static $enableOutput = true;
 
     /**
      * @var int
@@ -132,7 +132,7 @@ class HttpServer implements IHttpServer {
      * @return string
      */
     public function getStopCommand($pid) {
-        return s('kill %d', $pid);
+        return s('kill -9 %d', $pid);
     }
 
     /**
@@ -158,7 +158,7 @@ class HttpServer implements IHttpServer {
      */
     public function getStopMessage($date, $pid) {
         return s(
-            '%s - Killing process with ID %d', $date, $pid
+            '%s - Killing process with PID %d', $date, $pid
         );
     }
 
@@ -205,6 +205,6 @@ class HttpServer implements IHttpServer {
      * @return string
      */
     public function getPidCommand($host, $port) {
-        return s('ps aux | grep -v grep | grep "%s:%d"', $host, $port);
+        return s('ps a | grep -v grep | grep "%s:%d"', $host, $port);
     }
 }
