@@ -205,6 +205,6 @@ class HttpServer implements IHttpServer {
      * @return string
      */
     public function getPidCommand($host, $port) {
-        return s('ps | grep -v grep | grep "%s:%d"', $host, $port);
+        return s('ps aux | grep -v grep | grep "%s:%d"', $host, $port);
     }
 }
