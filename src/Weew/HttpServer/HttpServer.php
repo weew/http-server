@@ -4,11 +4,6 @@ namespace Weew\HttpServer;
 
 class HttpServer implements IHttpServer {
     /**
-     * @var bool
-     */
-    private static $enableOutput = true;
-
-    /**
      * @var int
      */
     private $pid;
@@ -29,28 +24,35 @@ class HttpServer implements IHttpServer {
     private $root;
 
     /**
+     * @var bool
+     */
+    private $enableOutput;
+
+    /**
      * @param $host
      * @param $port
      * @param $root
+     * @param bool $enableOutput
      */
-    public function __construct($host, $port, $root) {
+    public function __construct($host, $port, $root, $enableOutput = false) {
         $this->host = $host;
         $this->port = $port;
         $this->root = $root;
+        $this->enableOutput = $enableOutput;
     }
 
     /**
      * Disable server output.
      */
-    public static function disableOutput() {
-        static::$enableOutput = false;
+    public function disableOutput() {
+        $this->enableOutput = false;
     }
 
     /**
      * Enable server output.
      */
-    public static function enableOutput() {
-        static::$enableOutput = true;
+    public function enableOutput() {
+        $this->enableOutput = true;
     }
 
     /**
@@ -132,7 +134,7 @@ class HttpServer implements IHttpServer {
      * @return string
      */
     public function getStopCommand($pid) {
-        return s('kill -9 %d', $pid);
+        return s('kill %d', $pid);
     }
 
     /**
@@ -158,7 +160,7 @@ class HttpServer implements IHttpServer {
      */
     public function getStopMessage($date, $pid) {
         return s(
-            '%s - Killing process with PID %d', $date, $pid
+            '%s - Killing process with ID %d', $date, $pid
         );
     }
 
@@ -177,7 +179,7 @@ class HttpServer implements IHttpServer {
      * @param string $message
      */
     public function echoMessage($message = '') {
-        if ( ! static::$enableOutput) {
+        if ( ! $this->enableOutput) {
             return;
         }
 
@@ -205,6 +207,6 @@ class HttpServer implements IHttpServer {
      * @return string
      */
     public function getPidCommand($host, $port) {
-        return s('ps a | grep -v grep | grep "%s:%d"', $host, $port);
+        return s('ps | grep -v grep | grep "%s:%d"', $host, $port);
     }
 }
