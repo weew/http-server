@@ -17,8 +17,8 @@
         "phpunit/phpunit": "^4.7"
     },
     "require": {
-        "weew/php-helpers-string": "0.*",
-        "weew/php-helpers-array": "0.*",
-        "weew/php-timer": "0.*"
+        "weew/php-helpers-string": "^0.0.2",
+        "weew/php-helpers-array": "^0.0.2",
+        "weew/php-timer": "^0.0.3"
     }
 }

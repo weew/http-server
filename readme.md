@@ -1,8 +1,10 @@
 # HTTP server
 
 [![Build Status](https://travis-ci.org/weew/php-http-server.svg?branch=master)](https://travis-ci.org/weew/php-http-server)
-[![Code Climate](https://codeclimate.com/github/weew/php-http-server/badges/gpa.svg)](https://codeclimate.com/github/weew/php-http-server)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/weew/php-http-server/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/weew/php-http-server/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/weew/php-http-server/badge.svg?branch=master&service=github)](https://coveralls.io/github/weew/php-http-server?branch=master)
 [![License](https://poser.pugx.org/weew/php-http-server/license)](https://packagist.org/packages/weew/php-http-server)
+
 
 ## Usage
 

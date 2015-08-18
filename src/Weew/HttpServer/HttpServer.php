@@ -8,11 +8,6 @@ use Weew\Timer\Timer;
 
 class HttpServer implements IHttpServer {
     /**
-     * @var int
-     */
-    protected $pid;
-
-    /**
      * @var string
      */
     protected $host;
@@ -38,18 +33,35 @@ class HttpServer implements IHttpServer {
     protected $enableOutput;
 
     /**
+     * @var Commander
+     */
+    protected $commander;
+
+    /**
+     * @var Messenger
+     */
+    protected $messenger;
+
+    /**
      * @param $host
      * @param $port
      * @param $root
      * @param float $waitForServer
      * @param bool $enableOutput
      */
-    public function __construct($host, $port, $root, $waitForServer = 5.0, $enableOutput = false) {
+    public function __construct(
+        $host, $port, $root,
+        $waitForServer = 5.0,
+        $enableOutput = false
+    ) {
         $this->host = $host;
         $this->port = $port;
         $this->root = $root;
         $this->enableOutput = $enableOutput;
         $this->waitForServer = $waitForServer;
+
+        $this->commander = $this->createCommander();
+        $this->messenger = $this->createMessenger();
     }
 
     /**
@@ -72,8 +84,8 @@ class HttpServer implements IHttpServer {
     public function start() {
         if ($this->isRunning()) {
             $this->echoMessage(
-                $this->getServerIsAlreadyRunningMessage(
-                    date('r'), $this->host, $this->port, $this->pid
+                $this->messenger->getServerIsAlreadyRunningMessage(
+                    date('r'), $this->host, $this->port, $this->getPid()
                 )
             );
         } else {
@@ -85,6 +97,8 @@ class HttpServer implements IHttpServer {
 
     /**
      * Stop server.
+     *
+     * @throws Exception
      */
     public function stop() {
         if ($this->isRunning()) {
@@ -92,8 +106,8 @@ class HttpServer implements IHttpServer {
             $this->waitForServerToStop();
         } else {
             $this->echoMessage(
-                $this->getServerIsNotRunningMessage(
-                    date('r'), $this->host, $this->port, $this->pid
+                $this->messenger->getServerIsNotRunningMessage(
+                    date('r'), $this->host, $this->port
                 )
             );
         }
@@ -103,96 +117,11 @@ class HttpServer implements IHttpServer {
      * @return bool
      */
     public function isRunning() {
-        $command = $this->getPidCommand($this->host, $this->port);
+        $command = $this->commander
+            ->getPidCommand($this->host, $this->port);
         exec($command, $output);
 
         return count($output) > 0;
-    }
-
-    /**
-     * @param $host
-     * @param $port
-     * @param $root
-     *
-     * @return string
-     */
-    public function getStartCommand($host, $port, $root) {
-        $targetFlag = '-t';
-
-        if (is_file($root)) {
-            $targetFlag = '-s';
-        }
-
-        return s(
-            'php -S %s:%d %s %s >/dev/null 2>&1 & echo $!',
-            $host, $port, $targetFlag, $root
-        );
-    }
-
-    /**
-     * @param $pid
-     *
-     * @return string
-     */
-    public function getStopCommand($pid) {
-        return s('kill -9 %d', $pid);
-    }
-
-    /**
-     * @param $date
-     * @param $host
-     * @param $port
-     * @param $pid
-     *
-     * @return string
-     */
-    public function getStartMessage($date, $host, $port, $pid) {
-        return s(
-            '%s - HTTP server started on %s:%d with PID %d',
-            $date, $host, $port, $pid
-        );
-    }
-
-    /**
-     * @param $date
-     * @param $pid
-     *
-     * @return string
-     */
-    public function getStopMessage($date, $pid) {
-        return s(
-            '%s - Killing process with PID %d', $date, $pid
-        );
-    }
-
-    /**
-     * @param $date
-     * @param $host
-     * @param $port
-     * @param $pid
-     *
-     * @return string
-     */
-    public function getServerIsAlreadyRunningMessage($date, $host, $port, $pid) {
-        return s(
-            '%s - Server is already running at %s:%d with PID %d',
-            $date, $host, $port, $pid
-        );
-    }
-
-    /**
-     * @param $date
-     * @param $host
-     * @param $port
-     * @param $pid
-     *
-     * @return string
-     */
-    public function getServerIsNotRunningMessage($date, $host, $port, $pid) {
-        return s(
-            '%s - Server is not running at %s:%d with PID %d',
-            $date, $host, $port, $pid
-        );
     }
 
     /**
@@ -214,33 +143,23 @@ class HttpServer implements IHttpServer {
      * @return mixed
      */
     public function getPid() {
-        $command = $this->getPidCommand($this->host, $this->port);
+        $command = $this->commander
+            ->getPidCommand($this->host, $this->port);
         exec($command, $output);
 
         return array_get($output, 0);
     }
 
     /**
-     * @param $host
-     * @param $port
-     *
-     * @return string
-     */
-    public function getPidCommand($host, $port) {
-        return s('ps x | grep -v grep | grep "%s:%d"', $host, $port);
-    }
-
-    /**
      * Start server.
      */
     protected function startServer() {
-        $command = $this->getStartCommand($this->host, $this->port, $this->root);
+        $command = $this->commander
+            ->getStartCommand($this->host, $this->port, $this->root);
         exec($command, $output);
 
-        $this->pid = $this->getPid();
-
-        $this->echoMessage($this->getStartMessage(
-            date('r'), $this->host, $this->port, $this->pid
+        $this->echoMessage($this->messenger->getStartMessage(
+            date('r'), $this->host, $this->port, $this->getPid()
         ));
     }
 
@@ -248,11 +167,12 @@ class HttpServer implements IHttpServer {
      * Stop server.
      */
     protected function stopServer() {
-        $command = $this->getStopCommand($this->pid);
+        $pid = $this->getPid();
+        $command = $this->commander->getStopCommand($pid);
         exec($command);
 
         $this->echoMessage(
-            $this->getStopMessage(date('r'), $this->pid)
+            $this->messenger->getStopMessage(date('r'), $pid)
         );
     }
 
@@ -260,9 +180,7 @@ class HttpServer implements IHttpServer {
      * Fail-safe server shutdown.
      */
     protected function registerShutdownHandler() {
-        register_shutdown_function(function () {
-            $this->stop();
-        });
+        register_shutdown_function([$this, 'stop']);
     }
 
     /**
@@ -310,5 +228,19 @@ class HttpServer implements IHttpServer {
      */
     protected function createTimer() {
         return new Timer();
+    }
+
+    /**
+     * @return Commander
+     */
+    protected function createCommander() {
+        return new Commander();
+    }
+
+    /**
+     * @return Messenger
+     */
+    protected function createMessenger() {
+        return new Messenger();
     }
 }
