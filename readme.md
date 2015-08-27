@@ -20,6 +20,7 @@ serve some content, shutdown the server.
 // name instead of a directory the server will always serve this
 // file, no matter how the URI looks like
 $server = new HttpServer('localhost', 9999, __DIR__);
+$server->start();
 $server->isRunning(); // true
 $server->stop();
 ```
