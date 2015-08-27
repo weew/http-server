@@ -5,6 +5,10 @@
 [![Coverage Status](https://coveralls.io/repos/weew/php-http-server/badge.svg?branch=master&service=github)](https://coveralls.io/github/weew/php-http-server?branch=master)
 [![License](https://poser.pugx.org/weew/php-http-server/license)](https://packagist.org/packages/weew/php-http-server)
 
+## Related Projects
+
+[HTTP Blueprint](https://github.com/weew/php-http-blueprint): spin up a server,
+serve some content, shutdown the server.
 
 ## Usage
 
