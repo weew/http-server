@@ -53,5 +53,5 @@ $server->start();
 
 ## Related Projects
 
-[HTTP Blueprint](https://github.com/weew/php-http-blueprint): spin up a server,
+- [HTTP Blueprint](https://github.com/weew/php-http-blueprint): spin up a server,
 serve some content, shutdown the server.
