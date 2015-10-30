@@ -12,6 +12,10 @@
 - [Advanced options](#advanced-options)
 - [Related projects](#related-projects)
 
+## Installation
+
+`composer require weew/php-http-server`
+
 ## Basic usage
 
 To start the server, simply pass in a hostname, desired port and the root directory for your server.
