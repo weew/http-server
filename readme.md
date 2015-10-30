@@ -5,14 +5,16 @@
 [![Coverage Status](https://coveralls.io/repos/weew/php-http-server/badge.svg?branch=master&service=github)](https://coveralls.io/github/weew/php-http-server?branch=master)
 [![License](https://poser.pugx.org/weew/php-http-server/license)](https://packagist.org/packages/weew/php-http-server)
 
-## Related Projects
+## Table of contents
 
-[HTTP Blueprint](https://github.com/weew/php-http-blueprint): spin up a server,
-serve some content, shutdown the server.
+- [Installation](#installation)
+- [Basic usage](#basic-usage)
+- [Advanced options](#advanced-options)
+- [Related projects](#related-projects)
 
-## Usage
+## Basic usage
 
-##### Working with the server
+To start the server, simply pass in a hostname, desired port and the root directory for your server.
 
 ```php
 // all files within the given directory will be available
@@ -25,7 +27,9 @@ $server->isRunning(); // true
 $server->stop();
 ```
 
-##### Advanced configuration
+## Advanced options
+
+You can tell the server to block current process until the server has started by passing in a `$waitForProcess` value. You can also disable the server output completely.
 
 ```php
 // starting the server will wait for the server to start
@@ -42,3 +46,8 @@ $enableOutput = true;
 $server = new HttpServer('localhost', 9999, __DIR__, $waitForProcess, $enableOutput);
 $server->start();
 ```
+
+## Related Projects
+
+[HTTP Blueprint](https://github.com/weew/php-http-blueprint): spin up a server,
+serve some content, shutdown the server.
