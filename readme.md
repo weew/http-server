@@ -1,9 +1,11 @@
 # HTTP server
 
-[![Build Status](https://travis-ci.org/weew/php-http-server.svg?branch=master)](https://travis-ci.org/weew/php-http-server)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/weew/php-http-server/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/weew/php-http-server/?branch=master)
-[![Coverage Status](https://coveralls.io/repos/weew/php-http-server/badge.svg?branch=master&service=github)](https://coveralls.io/github/weew/php-http-server?branch=master)
-[![License](https://poser.pugx.org/weew/php-http-server/license)](https://packagist.org/packages/weew/php-http-server)
+[![Build Status](https://img.shields.io/travis/weew/php-http-server.svg)](https://travis-ci.org/weew/php-http-server)
+[![Code Quality](https://img.shields.io/scrutinizer/g/weew/php-http-server.svg)](https://scrutinizer-ci.com/g/weew/php-http-server)
+[![Test Coverage](https://img.shields.io/coveralls/weew/php-http-server.svg)](https://coveralls.io/github/weew/php-http-server)
+[![Dependencies](https://img.shields.io/versioneye/d/php/weew:php-http-server.svg)](https://versioneye.com/php/weew:php-http-server)
+[![Version](https://img.shields.io/packagist/v/weew/php-http-server.svg)](https://packagist.org/packages/weew/php-http-server)
+[![Licence](https://img.shields.io/packagist/l/weew/php-http-server.svg)](https://packagist.org/packages/weew/php-http-server)
 
 ## Table of contents
 
