@@ -34,10 +34,10 @@ class HttpServerTest extends PHPUnit_Framework_TestCase {
         $server->start();
         file_get_contents('http://localhost:6789/test?first');
         file_get_contents('http://localhost:6789/test?second');
+        $server->stop();
         $lines = explode("\n", file_get_contents($logFile));
         $this->assertRegExp('/first$/', $lines[0]);
         $this->assertRegExp('/second$/', $lines[1]);
-        $server->stop();
         unlink($logFile);
     }
     public function test_enable_and_disable_output() {
