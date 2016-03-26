@@ -7,10 +7,11 @@ class Commander {
      * @param $host
      * @param $port
      * @param $root
+     * @param $log
      *
      * @return string
      */
-    public function getStartCommand($host, $port, $root) {
+    public function getStartCommand($host, $port, $root, $log) {
         $targetFlag = '-t';
 
         if (is_file($root)) {
@@ -18,8 +19,8 @@ class Commander {
         }
 
         return s(
-            'php -S %s:%d %s %s >/dev/null 2>&1 & echo $!',
-            $host, $port, $targetFlag, $root
+            'php -S %s:%d %s %s >>%s 2>&1 & echo $!',
+            $host, $port, $targetFlag, $root, $log
         );
     }
 

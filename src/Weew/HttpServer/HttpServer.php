@@ -43,6 +43,11 @@ class HttpServer implements IHttpServer {
     protected $messenger;
 
     /**
+     * @var string
+     */
+    protected $logFile = '/dev/null';
+
+    /**
      * @param $host
      * @param $port
      * @param $root
@@ -76,6 +81,16 @@ class HttpServer implements IHttpServer {
      */
     public function enableOutput() {
         $this->enableOutput = true;
+    }
+
+    /**
+     * File the server will be logging into.
+     * Use /dev/null to disable logging
+     * 
+     * @param string $logFile
+     */
+    public function setLogFile($logFile) {
+        $this->logFile = $logFile;
     }
 
     /**
@@ -155,7 +170,7 @@ class HttpServer implements IHttpServer {
      */
     protected function startServer() {
         $command = $this->commander
-            ->getStartCommand($this->host, $this->port, $this->root);
+            ->getStartCommand($this->host, $this->port, $this->root, $this->logFile);
         exec($command, $output);
 
         $this->echoMessage($this->messenger->getStartMessage(

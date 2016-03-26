@@ -27,6 +27,19 @@ class HttpServerTest extends PHPUnit_Framework_TestCase {
         $server->stop();
     }
 
+    public function test_server_logging() {
+        $server = new HttpServer('localhost', 6789, __DIR__);
+        $logFile = tempnam(sys_get_temp_dir(), 'php');
+        $server->setLogFile($logFile);
+        $server->start();
+        file_get_contents('http://localhost:6789/test?first');
+        file_get_contents('http://localhost:6789/test?second');
+        $lines = explode("\n", file_get_contents($logFile));
+        $this->assertRegExp('/first$/', $lines[0]);
+        $this->assertRegExp('/second$/', $lines[1]);
+        $server->stop();
+        unlink($logFile);
+    }
     public function test_enable_and_disable_output() {
         $server = new HttpServer('localhost', 6789, __DIR__);
         $server->enableOutput();
