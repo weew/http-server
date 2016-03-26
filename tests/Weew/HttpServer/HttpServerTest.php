@@ -40,6 +40,7 @@ class HttpServerTest extends PHPUnit_Framework_TestCase {
         $this->assertRegExp('/second$/', $lines[1]);
         unlink($logFile);
     }
+    
     public function test_enable_and_disable_output() {
         $server = new HttpServer('localhost', 6789, __DIR__);
         $server->enableOutput();
