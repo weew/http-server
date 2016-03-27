@@ -28,6 +28,10 @@ To start the server, simply pass in a hostname, desired port and the root direct
 // name instead of a directory the server will always serve this
 // file, no matter how the URI looks like
 $server = new HttpServer('localhost', 9999, __DIR__);
+
+// incoming requests will be logged to this file
+$server->setLogFile('/tmp/log');
+
 $server->start();
 $server->isRunning(); // true
 $server->stop();
