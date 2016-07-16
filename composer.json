@@ -1,5 +1,5 @@
 {
-    "name": "weew/php-http-server",
+    "name": "weew/http-server",
     "description": "Simple wrapper for the php's built in http server.",
     "license": "MIT",
     "authors": [
@@ -14,9 +14,9 @@
         }
     },
     "require": {
-        "weew/php-helpers-string": "^1.0.0",
-        "weew/php-helpers-array": "^1.0.0",
-        "weew/php-timer": "^1.0.0"
+        "weew/helpers-string": "^1.0.0",
+        "weew/helpers-array": "^1.0.0",
+        "weew/timer": "^1.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.7",

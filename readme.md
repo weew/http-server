@@ -1,11 +1,11 @@
 # HTTP server
 
-[![Build Status](https://img.shields.io/travis/weew/php-http-server.svg)](https://travis-ci.org/weew/php-http-server)
-[![Code Quality](https://img.shields.io/scrutinizer/g/weew/php-http-server.svg)](https://scrutinizer-ci.com/g/weew/php-http-server)
-[![Test Coverage](https://img.shields.io/coveralls/weew/php-http-server.svg)](https://coveralls.io/github/weew/php-http-server)
-[![Dependencies](https://img.shields.io/versioneye/d/php/weew:php-http-server.svg)](https://versioneye.com/php/weew:php-http-server)
-[![Version](https://img.shields.io/packagist/v/weew/php-http-server.svg)](https://packagist.org/packages/weew/php-http-server)
-[![Licence](https://img.shields.io/packagist/l/weew/php-http-server.svg)](https://packagist.org/packages/weew/php-http-server)
+[![Build Status](https://img.shields.io/travis/weew/http-server.svg)](https://travis-ci.org/weew/http-server)
+[![Code Quality](https://img.shields.io/scrutinizer/g/weew/http-server.svg)](https://scrutinizer-ci.com/g/weew/http-server)
+[![Test Coverage](https://img.shields.io/coveralls/weew/http-server.svg)](https://coveralls.io/github/weew/http-server)
+[![Dependencies](https://img.shields.io/versioneye/d/php/weew:http-server.svg)](https://versioneye.com/php/weew:http-server)
+[![Version](https://img.shields.io/packagist/v/weew/http-server.svg)](https://packagist.org/packages/weew/http-server)
+[![Licence](https://img.shields.io/packagist/l/weew/http-server.svg)](https://packagist.org/packages/weew/http-server)
 
 ## Table of contents
 
@@ -16,7 +16,7 @@
 
 ## Installation
 
-`composer require weew/php-http-server`
+`composer require weew/http-server`
 
 ## Basic usage
 
@@ -59,5 +59,5 @@ $server->start();
 
 ## Related Projects
 
-- [HTTP Blueprint](https://github.com/weew/php-http-blueprint): spin up a server,
+- [HTTP Blueprint](https://github.com/weew/http-blueprint): spin up a server,
 serve some content, shutdown the server.
